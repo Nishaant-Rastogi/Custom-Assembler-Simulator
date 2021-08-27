@@ -328,6 +328,9 @@ def main():
     xs = [x[0] for x in plotter]
     ys = [x[1] for x in plotter]
     plt.scatter(xs, ys)
+    plt.title('Address v/s Cycles')
+    plt.xlabel('Cycles')
+    plt.ylabel('Addresses')
     plt.show()
 
 
