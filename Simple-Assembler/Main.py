@@ -9,6 +9,13 @@ def addLabel(label, memAddress, lineNum):
         print("ERROR - ", label, " is a Reserved keyword; Cannot be used as Label , on LineNumber - ", lineNum)
         exit()
     else:
+        for i in label:
+            if i.isalnum() or i == "_":
+                c = 0
+            else:
+                c = 1
+                print("ERROR - Illegal variable name , on lineNumber - ", lineNum)
+                exit()
         labelTable[label] = memAddress
 
 
@@ -313,14 +320,14 @@ def getcode(instruction, type):
         reg2 = reg[OP[2]]
         code = opcode + "00000" + reg1 + reg2
         return code
-    if type == "D":
+    if (type == "D"):
         opcode = opcodeTable[op][0]
         reg1 = reg[OP[1]]
         mem = varTable[OP[2]]
         strmem = bitscode(int(mem))
         code = opcode + reg1 + strmem
         return code
-    if type == "E":
+    if (type == "E"):
         opcode = opcodeTable[op][0]
         mem = labelTable[OP[1]]
         strmem = bitscode(int(mem))
@@ -333,7 +340,7 @@ def getcode(instruction, type):
 
 
 def gettype(instruction):
-    OP = instruction.split()
+    OP = instruction.split(" ")
     op = OP[0]
     if op == "add":
         return "A"
@@ -390,8 +397,10 @@ def main():
         try:
             s = input()
             # change this
-            if s != "":
+            if s != "" and s!="0":
                 a.append(s)
+            if s== "0":
+                break
         except EOFError:
             break
     i = 0
