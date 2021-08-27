@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 
 cycle_number = -1
 
-
 def dumpMEM():
     for i in MEM:
         print(i)
@@ -12,7 +11,7 @@ def dumpPC_REG():
     y = convert8(PC)
     print(y, end=" ")
     for i in reg_encoding.keys():
-        if i != "111":
+        if(i!="111"):
             x = convert16(reg_encoding[i])
         else:
             x = reg_encoding[i]
@@ -34,14 +33,12 @@ def convert16(val):
         x = "0" + x
     return x
 
-
-# made this function to get only last 16 bits values
+#made this function to get only last 16 bits values
 def convert16bin(val):
     y = int(val)
     x = bin(y).replace("0b", "")
     z = x[-16:]
     return z
-
 
 def parameter_based_on_type(instruction, type):
     # returning as strings
@@ -67,7 +64,6 @@ def parameter_based_on_type(instruction, type):
         return mem_add
     else:
         return -1
-
 
 # give full line as input
 # will give based on type of instruction
@@ -137,7 +133,8 @@ def decode(instruction):
 
 
 def checkOverflow(data):
-    if data < 0 or data >= pow(2, 16):
+    #changed this here(kushagra)
+    if data < 0 or data >= pow(2,16):
         # Overflow Bit set to 1
         reg_encoding["111"] = "000000000000" + "1000"
         return True
@@ -151,11 +148,12 @@ def execute():
     global cycle_number
     while not halted:
         instruction = MEM[PC]
-        cycle_number = cycle_number + 1
-        plotter.append([cycle_number, PC])
+        cycle_number = cycle_number+1;
+        plotter.append([cycle_number,PC])
         type = decode(instruction)
         if type == "F":
             halted = True
+            reg_encoding["111"] = flag_reset
             dumpPC_REG()
             print()
         elif type == "A":
@@ -176,10 +174,10 @@ def execute():
             elif op == "or":
                 ans = reg_encoding[r1] | reg_encoding[r2]
             if checkOverflow(ans):
-                # made these if and else statements
-                if op == "add" or op == "mul":
+                #made these if and else statements
+                if(op=="add" or op == "mul"):
                     binary = convert16bin(ans)
-                    dec = int(binary, 2)
+                    dec = int(binary,2)
                     reg_encoding[rD] = dec
                 else:
                     reg_encoding[rD] = 0
@@ -217,7 +215,7 @@ def execute():
                 reg_encoding["000"] = int(reg_encoding[r3] / reg_encoding[r4])
                 reg_encoding["001"] = int(temp % reg_encoding[r4])
             elif op == "not":
-                reg_encoding[r3] = pow(2, 16) - 1 - reg_encoding[r4]
+                reg_encoding[r3] = pow(2,16) - 1 - reg_encoding
             elif op == "cmp":
                 if int(reg_encoding[r3]) > int(reg_encoding[r4]):
                     reg_encoding["111"] = "000000000000" + "0010"
@@ -236,12 +234,12 @@ def execute():
             r1, var = parameter_based_on_type(instruction, "D")
             op = op_table[instruction[:5]]
             if op == "ld":
-                # added this for plotting
-                plotter.append([cycle_number, int(var, 2)])
+                #added this for plotting
+                plotter.append([cycle_number,int(var, 2)])
                 reg_encoding[r1] = int(MEM[int(var, 2)], 2)
             elif op == "st":
-                # added this for plotting
-                plotter.append([cycle_number, int(var, 2)])
+                #added this for plotting
+                plotter.append([cycle_number,int(var, 2)])
                 MEM[int(var, 2)] = convert16(reg_encoding[r1])
             dumpPC_REG()
             print()
@@ -251,7 +249,7 @@ def execute():
         elif type == "E":
             label = parameter_based_on_type(instruction, "E")
             # getval will convert the 8 bit label address to decimal
-            label_add = int(label, 2)
+            label_add = int(label,2)
             op = op_table[instruction[:5]]
             if op == "jmp":
                 reg_encoding["111"] = flag_reset
@@ -296,8 +294,12 @@ def execute():
 MEM = []
 PC = 0
 plotter = []
+# changed slightly here
+# reg = {"R0":0, "R1":0, "R2":0, "R3":0, "R4":0, "R5":0, "R6":0, "FLAGS":"0000000000000000"}
 var_value = {}
 reg_encoding = {"000": 0, "001": 0, "010": 0, "011": 0, "100": 0, "101": 0, "110": 0, "111": "0000000000000000"}
+
+# I could've stored the type as well but I made a separate function for that reason this dictionary was getting larger incresed possibility of error in entering data
 
 op_table = {"00000": "add", "00001": "sub", "00010": "mov_im", "00011": "mov", "00100": "ld", "00101": "st",
             "00110": "mul", "00111": "div", "01000": "rs", "01001": "ls", "01010": "xor", "01011": "or", "01100": "and",
@@ -310,7 +312,9 @@ def main():
     while True:
         s = ""
         try:
-            s = input()
+            inp = input()
+            #rstrip will remove /r from the end of file
+            s = inp.rstrip()
             # change this
             if s != "" and s != "0":
                 MEM.append(s)
@@ -324,13 +328,10 @@ def main():
     execute()
     dumpMEM()
 
-    # plotting part:
+    #plotting part:
     xs = [x[0] for x in plotter]
     ys = [x[1] for x in plotter]
     plt.scatter(xs, ys)
-    plt.title('Memory Address v/s Cycles')
-    plt.xlabel('Cycles')
-    plt.ylabel('Addresses')
     plt.show()
 
 
