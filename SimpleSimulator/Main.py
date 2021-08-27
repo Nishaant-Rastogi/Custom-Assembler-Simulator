@@ -133,7 +133,6 @@ def decode(instruction):
 
 
 def checkOverflow(data):
-    #changed this here(kushagra)
     if data < 0 or data >= pow(2,16):
         # Overflow Bit set to 1
         reg_encoding["111"] = "000000000000" + "1000"
@@ -331,6 +330,9 @@ def main():
     #plotting part:
     xs = [x[0] for x in plotter]
     ys = [x[1] for x in plotter]
+    plt.xlabel("Cycles")
+    plt.ylabel("Address")
+    plt.title("Memory Address v/s Cycles")
     plt.scatter(xs, ys)
     plt.show()
 
