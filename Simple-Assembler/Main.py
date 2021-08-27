@@ -233,9 +233,14 @@ def extractOpcodeVarLabel(lineNum, line, x):
         addOpcode('hlt', '10011', "F")
     else:
         if op == "var":
-            variable = OP[1]
-            vAddress += 1
-            addVar(variable, vAddress, lineNum)
+            #changed kushagra
+            if(len(OP)==2):
+                variable = OP[1]
+                vAddress += 1
+                addVar(variable, vAddress, lineNum)
+            else:
+                print("ERROR - Unsupported Command Found , on lineNumber - ", lineNum)
+                exit()
             # changed
         elif op[-1] == ":":
             # this part was added to check for multiple labels in a single line
@@ -395,11 +400,12 @@ def main():
     while True:
         s = ""
         try:
-            s = input()
+            inp = input()
+            s = inp.rstrip()
             # change this
             if s != "" and s!="0":
                 a.append(s)
-            if s== "0":
+            if s == "0":
                 break
         except EOFError:
             break
@@ -407,14 +413,17 @@ def main():
     while i < len(a):
         x = 0
         l = a[i].split()
+        #changed kushagra
         if l[0] == "hlt":
             # print(i)
             hltflag = 1
             if i < len(a) - 1:
                 print("ERROR - hlt must be used as the last instruction , on lineNumber - ", i + 1)
                 exit()
+        #changed kushagra
         if ":" in l[0]:
-            if ":" in l[1]:
+            #changed kushagra
+            if len(l)>1 and ":" in l[1]:
                 x = 1
         else:
             x = 0
@@ -435,7 +444,8 @@ def main():
     #     print(cc)
     output = []
     # change
-    if len(cc) == 0 or cc[-1][0] != "hlt":
+    #changed kushagra
+    if len(cc) == 0 or cc[-1][0].split()[0] != "hlt":
         if hltflag == 1:
             print("ERROR - Last instruction should be halt , on lineNumber - ", len(a))
             exit()
