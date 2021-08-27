@@ -315,10 +315,8 @@ def main():
             #rstrip will remove /r from the end of file
             s = inp.rstrip()
             # change this
-            if s != "" and s != "0":
+            if s != "":
                 MEM.append(s)
-            if s == "0":
-                break
         except EOFError:
             break
     for i in range(len(MEM), 256):

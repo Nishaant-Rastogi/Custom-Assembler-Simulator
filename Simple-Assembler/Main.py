@@ -403,10 +403,8 @@ def main():
             inp = input()
             s = inp.rstrip()
             # change this
-            if s != "" and s!="0":
+            if s != "":
                 a.append(s)
-            if s == "0":
-                break
         except EOFError:
             break
     i = 0
