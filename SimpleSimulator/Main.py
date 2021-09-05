@@ -214,7 +214,7 @@ def execute():
                 reg_encoding["000"] = int(reg_encoding[r3] / reg_encoding[r4])
                 reg_encoding["001"] = int(temp % reg_encoding[r4])
             elif op == "not":
-                reg_encoding[r3] = pow(2,16) - 1 - reg_encoding
+                reg_encoding[r3] = pow(2,16) - 1 - reg_encoding[r4]
             elif op == "cmp":
                 if int(reg_encoding[r3]) > int(reg_encoding[r4]):
                     reg_encoding["111"] = "000000000000" + "0010"

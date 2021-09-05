@@ -345,7 +345,7 @@ def getcode(instruction, type):
 
 
 def gettype(instruction):
-    OP = instruction.split(" ")
+    OP = instruction.split()
     op = OP[0]
     if op == "add":
         return "A"
